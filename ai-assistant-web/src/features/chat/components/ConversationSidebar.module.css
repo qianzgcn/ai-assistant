@@ -2,26 +2,20 @@
   display: flex;
   flex-direction: column;
   height: 100%;
-  padding: 16px 12px;
-  gap: 8px;
+  padding: 24px 18px 18px;
+  gap: 18px;
 }
 
 .header {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 18px;
 }
 
 .newButton {
   justify-content: flex-start;
-  height: 40px;
+  height: 44px;
   border-radius: var(--radius-md);
-  background: #3b82f6;
-  border: none;
-}
-
-.newButton:hover {
-  background: #2563eb;
 }
 
 .metaRow {
@@ -45,28 +39,23 @@
 }
 
 .groupBlock {
-  margin-bottom: 16px;
+  margin-bottom: 18px;
 }
 
 .groupLabel {
   color: var(--color-text-muted);
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.08em;
 }
 
 .listItem {
-  margin-bottom: 4px;
+  margin-bottom: 6px;
   border-radius: var(--radius-lg);
-  background: transparent;
-}
-
-.listItem:hover {
-  background: rgba(255, 255, 255, 0.05);
 }
 
 .itemIcon {
-  color: #3b82f6;
+  color: #5b7cff;
 }
 
 .itemLabel {
@@ -88,7 +77,6 @@
 .itemTitle {
   flex: 1;
   min-width: 0;
-  color: var(--color-text);
 }
 
 .itemTime {
@@ -101,7 +89,6 @@
   flex: 1;
   min-width: 0;
   font-size: 12px;
-  color: var(--color-text-muted);
 }
 
 .statusTag {

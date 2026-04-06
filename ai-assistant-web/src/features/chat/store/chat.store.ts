@@ -2,6 +2,7 @@ import { create } from 'zustand';
 
 import type { ChatService } from '@/features/chat/api/chat-service';
 import { mockChatService } from '@/features/chat/api/mock-chat-service';
+import { apiChatService } from '@/features/chat/api/api-chat-service';
 import { chatRepository } from '@/features/chat/data/chat-repository';
 import {
   DEFAULT_CONVERSATION_TITLE,
@@ -613,7 +614,21 @@ export function createChatStore({ chatService, repository }: ChatStoreDependenci
   }));
 }
 
+// Select service based on environment
+const getActiveChatService = (): ChatService => {
+  if (import.meta.env.VITE_USE_MOCK_SERVICE === 'true') {
+    console.log('[Store] Using mock chat service');
+    return mockChatService;
+  }
+  if (import.meta.env.VITE_API_BASE_URL) {
+    console.log('[Store] Using API chat service:', import.meta.env.VITE_API_BASE_URL);
+    return apiChatService;
+  }
+  console.log('[Store] Using mock chat service (default)');
+  return mockChatService;
+};
+
 export const useChatStore = createChatStore({
-  chatService: mockChatService,
+  chatService: getActiveChatService(),
   repository: chatRepository,
 });

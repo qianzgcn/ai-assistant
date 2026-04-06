@@ -6,6 +6,12 @@
 
 这个项目是一个 Vite 静态前端。
 
+注意当前仓库结构：
+
+- 顶层 Git 仓库是 `ai-assistant`
+- 真正的前端项目代码在 `ai-assistant-web/` 子目录
+- GitHub Actions 工作流必须定义在顶层仓库根目录 `.github/workflows/`
+
 它的部署逻辑不是“把 React 应用在服务器上跑起来”，而是：
 
 1. GitHub Actions 在云端帮你执行 `npm ci`、`npm run lint`、`npm test`、`npm run build`
@@ -187,16 +193,16 @@ docker exec <你的-nginx-容器名> nginx -s reload
 
 本仓库已经准备好：
 
-- GitHub Actions 工作流：`.github/workflows/deploy.yml`
-- 远程发布脚本：`scripts/deploy/remote-release.sh`
+- GitHub Actions 工作流：顶层仓库 `.github/workflows/deploy.yml`
+- 远程发布脚本：`ai-assistant-web/scripts/deploy/remote-release.sh`
 
 工作流的行为是：
 
 1. push 到 `main`
-2. 自动安装依赖
-3. 自动 lint
-4. 自动 test
-5. 自动 build
+2. 进入 `ai-assistant-web/` 子目录自动安装依赖
+3. 在 `ai-assistant-web/` 子目录自动 lint
+4. 在 `ai-assistant-web/` 子目录自动 test
+5. 在 `ai-assistant-web/` 子目录自动 build
 6. 上传 `dist`
 7. 远程切换 `current`
 8. reload Nginx 容器

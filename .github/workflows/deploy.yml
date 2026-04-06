@@ -15,15 +15,23 @@ jobs:
     name: Build And Deploy
     runs-on: ubuntu-latest
 
-    # 将常用变量集中在这里，避免在多个步骤里重复写死。
+    # 这里的 workflow 放在顶层仓库，但真正的前端项目在 ai-assistant-web 子目录里。
+    # 因此我们把常量集中定义，后续所有路径都基于这个子目录展开。
     env:
+      PROJECT_DIR: ai-assistant-web
       NODE_VERSION: '20.19.5'
       ARCHIVE_NAME: web-dist.tar.gz
       RELEASE_NAME: ${{ github.sha }}
       KEEP_RELEASES: ${{ secrets.KEEP_RELEASES }}
 
+    # 默认把 run 命令放到前端子目录内执行。
+    # 这样 npm ci / lint / test / build 都会在 ai-assistant-web 中运行。
+    defaults:
+      run:
+        working-directory: ai-assistant-web
+
     steps:
-      # 第一步：拉取仓库代码。后续所有构建命令都依赖这里下载下来的源码。
+      # 第一步：拉取整个顶层仓库代码。GitHub 只会识别根目录 .github/workflows 下的工作流。
       - name: Checkout repository
         uses: actions/checkout@v4
 
@@ -33,9 +41,9 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: npm
+          cache-dependency-path: ai-assistant-web/package-lock.json
 
-      # 第三步：安装依赖。这里用 npm ci，而不是 npm install，
-      # 因为 ci 会严格按照 package-lock.json 安装，更适合 CI/CD。
+      # 第三步：安装依赖。这里使用 ai-assistant-web/package-lock.json。
       - name: Install dependencies
         run: npm ci
 
@@ -47,11 +55,11 @@ jobs:
       - name: Run tests
         run: npm test
 
-      # 第六步：构建生产产物。Vite 会在 dist 目录下生成可部署的静态文件。
+      # 第六步：构建生产产物。Vite 会在 ai-assistant-web/dist 目录下生成可部署的静态文件。
       - name: Build project
         run: npm run build
 
-      # 第七步：把 dist 目录压缩成一个归档文件，方便后续通过 scp 一次性上传。
+      # 第七步：把 ai-assistant-web/dist 目录压缩成一个归档文件，方便后续通过 scp 一次性上传。
       - name: Archive dist
         run: tar -czf "${ARCHIVE_NAME}" -C dist .
 
@@ -59,6 +67,7 @@ jobs:
       # 这里不依赖第三方 SSH Action，而是直接使用 runner 自带的 ssh/scp 命令。
       - name: Prepare SSH client
         shell: bash
+        working-directory: .
         run: |
           set -Eeuo pipefail
 
@@ -77,6 +86,7 @@ jobs:
       # 这么做是为了确保后续 scp 上传时目标目录一定存在。
       - name: Prepare remote directories
         shell: bash
+        working-directory: .
         run: |
           set -Eeuo pipefail
 
@@ -84,22 +94,24 @@ jobs:
             "mkdir -p '${{ secrets.DEPLOY_PATH }}/tmp' '${{ secrets.DEPLOY_PATH }}/releases' '${{ secrets.DEPLOY_PATH }}/shared'"
 
       # 第十步：上传构建产物和远程部署脚本。
-      # 产物和脚本都放到服务器的 tmp 目录里，便于后续统一处理。
+      # 注意：workflow 在仓库根目录，但脚本真实路径位于 ai-assistant-web/scripts/deploy。
       - name: Upload artifact and deploy script
         shell: bash
+        working-directory: .
         run: |
           set -Eeuo pipefail
 
-          scp -P "${{ secrets.TENCENT_PORT }}" "${ARCHIVE_NAME}" \
+          scp -P "${{ secrets.TENCENT_PORT }}" "${{ env.PROJECT_DIR }}/${ARCHIVE_NAME}" \
             "${{ secrets.TENCENT_USER }}@${{ secrets.TENCENT_HOST }}:${{ secrets.DEPLOY_PATH }}/tmp/${ARCHIVE_NAME}"
 
-          scp -P "${{ secrets.TENCENT_PORT }}" "scripts/deploy/remote-release.sh" \
+          scp -P "${{ secrets.TENCENT_PORT }}" "${{ env.PROJECT_DIR }}/scripts/deploy/remote-release.sh" \
             "${{ secrets.TENCENT_USER }}@${{ secrets.TENCENT_HOST }}:${{ secrets.DEPLOY_PATH }}/tmp/remote-release.sh"
 
       # 第十一步：在服务器上执行远程部署脚本。
       # 这里不会在服务器上构建前端，只是解压 dist、切换 current、reload Nginx。
       - name: Execute remote release script
         shell: bash
+        working-directory: .
         run: |
           set -Eeuo pipefail
 

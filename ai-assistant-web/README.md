@@ -19,3 +19,5 @@ npm run dev
 如果你准备把这个项目通过 GitHub Actions 自动部署到腾讯云 CVM，可以直接看这份中文文档：
 
 `docs/deploy/tencent-cvm-github-actions.md`
+
+注意：当前 GitHub Actions 工作流定义在顶层仓库根目录 `.github/workflows`，因为 GitHub 只会扫描仓库根目录下的 workflow 文件；但真正的前端项目代码仍然位于 `ai-assistant-web/` 子目录。

@@ -15,12 +15,14 @@ body,
   width: 100%;
   height: 100%;
   margin: 0;
+  padding: 0;
 }
 
 body {
   color: var(--color-text);
   font-family: var(--font-family-base);
   overflow: hidden;
+  background: #0f172a;
 }
 
 button,
@@ -37,4 +39,112 @@ a {
 code,
 pre {
   font-family: var(--font-family-mono);
+}
+
+/* Custom scrollbar for dark theme */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #475569;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #64748b;
+}
+
+/* Dark theme overrides for Ant Design X */
+.ant-x-bubble .ant-x-bubble-bubble {
+  background: #1e293b !important;
+  color: #e2e8f0 !important;
+  border: 1px solid #334155;
+}
+
+.ant-x-bubble .ant-x-bubble-bubble-user {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%) !important;
+  color: #ffffff !important;
+  border: none;
+}
+
+.ant-x-bubble .ant-x-bubble-bubble-arrow {
+  display: none;
+}
+
+.ant-x-bubble .ant-x-bubble-bubble-status {
+  color: #94a3b8 !important;
+}
+
+/* Ant Design Input overrides */
+.ant-input,
+.ant-input-affix-wrapper {
+  background: #1e293b !important;
+  border-color: #334155 !important;
+  color: #e2e8f0 !important;
+}
+
+.ant-input::placeholder {
+  color: #64748b !important;
+}
+
+.ant-input:hover,
+.ant-input-affix-wrapper:hover {
+  border-color: #3b82f6 !important;
+}
+
+.ant-input:focus,
+.ant-input-affix-wrapper:focus,
+.ant-input-affix-wrapper-focused {
+  border-color: #3b82f6 !important;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2) !important;
+}
+
+/* Ant Design Select overrides */
+.ant-select-selector {
+  background: #1e293b !important;
+  border-color: #334155 !important;
+  color: #e2e8f0 !important;
+}
+
+.ant-select-dropdown {
+  background: #1e293b !important;
+  border: 1px solid #334155;
+}
+
+.ant-select-item {
+  color: #e2e8f0 !important;
+}
+
+.ant-select-item-option-active {
+  background: #334155 !important;
+}
+
+.ant-select-item-option-selected {
+  background: #3b82f6 !important;
+}
+
+/* Ant Design Button overrides */
+.ant-btn-primary {
+  background: #3b82f6 !important;
+  border-color: #3b82f6 !important;
+}
+
+.ant-btn-primary:hover {
+  background: #2563eb !important;
+  border-color: #2563eb !important;
+}
+
+/* Welcome panel text */
+.ant-typography,
+.ant-typography h1,
+.ant-typography h2,
+.ant-typography h3,
+.ant-typography p {
+  color: #e2e8f0 !important;
 }

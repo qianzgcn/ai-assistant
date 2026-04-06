@@ -1,6 +1,7 @@
 .header {
-  padding: 28px 32px 18px;
-  border-bottom: 1px solid rgba(219, 227, 240, 0.8);
+  padding: 20px 32px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  background: #0f172a;
 }
 
 .headerInner {
@@ -21,23 +22,25 @@
 }
 
 .title {
-  margin: 6px 0 0 !important;
-  color: #0f172a !important;
+  margin: 4px 0 0 !important;
+  color: #f1f5f9 !important;
 }
 
 .titleInput {
   max-width: 420px;
-  margin-top: 6px;
+  margin-top: 4px;
 }
 
 .headerDescription {
   max-width: 640px;
-  margin: 8px 0 0 !important;
+  margin: 6px 0 0 !important;
   color: var(--color-text-muted) !important;
 }
 
 .modelSelect {
-  min-width: 220px;
+  min-width: 200px;
+  background: #1e293b;
+  border-color: #334155;
 }
 
 @media (max-width: 1200px) {

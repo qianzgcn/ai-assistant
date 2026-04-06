@@ -2,35 +2,35 @@ import type { ThemeConfig } from 'antd';
 
 export const appTheme: ThemeConfig = {
   token: {
-    colorPrimary: '#6366f1',
-    colorSuccess: '#10b981',
-    colorWarning: '#f59e0b',
-    colorError: '#ef4444',
-    colorInfo: '#6366f1',
-    colorTextBase: '#1e293b',
-    colorBgBase: '#f8fafc',
-    colorBorderSecondary: '#e2e8f0',
-    borderRadius: 12,
-    borderRadiusLG: 16,
+    colorPrimary: '#6B73B0',
+    colorSuccess: '#34C759',
+    colorWarning: '#FF9500',
+    colorError: '#FF3B30',
+    colorInfo: '#6B73B0',
+    colorTextBase: '#2D2D3A',
+    colorBgBase: '#F8F8FA',
+    colorBorderSecondary: '#E8E8ED',
+    borderRadius: 6,
+    borderRadiusLG: 8,
     fontSize: 14,
     fontFamily:
       '"Inter", "SF Pro Display", "PingFang SC", "Microsoft YaHei", "Segoe UI", sans-serif',
-    boxShadowSecondary: '0 4px 20px rgba(15, 23, 42, 0.06)',
+    boxShadowSecondary: '0 1px 3px rgba(0, 0, 0, 0.02)',
   },
   components: {
     Layout: {
-      siderBg: 'rgba(255, 255, 255, 0.8)',
+      siderBg: '#FFFFFF',
       headerBg: 'transparent',
       bodyBg: 'transparent',
     },
     Button: {
-      controlHeight: 40,
+      controlHeight: 34,
     },
     Input: {
-      controlHeight: 40,
+      controlHeight: 34,
     },
     Select: {
-      controlHeight: 40,
+      controlHeight: 34,
     },
   },
 };

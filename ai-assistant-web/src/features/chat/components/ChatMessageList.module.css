@@ -3,7 +3,7 @@
   max-width: var(--chat-content-width);
   min-height: 100%;
   margin: 0 auto;
-  padding: 8px 0 22px;
+  padding: 12px 0 24px;
 }
 
 .messageList :global(.ant-bubble-list) {
@@ -11,26 +11,31 @@
 }
 
 .assistantAvatar {
-  display: grid;
-  width: 36px;
-  height: 36px;
-  place-items: center;
-  border-radius: 10px;
-  color: #ffffff;
-  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-strong) 100%);
-  font-size: 12px;
-  font-weight: 700;
-}
-
-.userBubble {
-  color: #ffffff !important;
-  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-strong) 100%) !important;
-  border: none !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  color: var(--color-primary);
+  background: rgba(107, 115, 176, 0.08);
 }
 
 .userMessage {
   white-space: pre-wrap;
-  line-height: 1.7;
+  line-height: 1.65;
+  color: var(--color-text);
+}
+
+.userAvatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  color: var(--color-text-muted);
+  background: var(--color-surface-soft);
 }
 
 .messagePlaceholder {
@@ -39,7 +44,7 @@
 
 .markdown {
   color: var(--color-text);
-  line-height: 1.75;
+  line-height: 1.7;
 }
 
 .markdown p,
@@ -62,7 +67,7 @@
   width: 100%;
   border-collapse: collapse;
   overflow: hidden;
-  border-radius: 8px;
+  border-radius: 6px;
 }
 
 .markdown th,
@@ -78,33 +83,33 @@
 }
 
 .inlineCode {
-  padding: 2px 6px;
+  padding: 2px 5px;
   border-radius: 4px;
-  background: #f1f5f9;
-  color: var(--color-primary-strong);
+  background: var(--color-surface-soft);
+  color: var(--color-primary);
 }
 
 .codeBlock {
   overflow: hidden;
   border: 1px solid var(--color-border);
-  border-radius: 8px;
+  border-radius: 6px;
 }
 
 .codeHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 12px;
+  padding: 8px 12px;
   color: var(--color-text-muted);
-  background: #f8fafc;
+  background: var(--color-surface-soft);
   font-size: 12px;
 }
 
 .codeContent {
   margin: 0;
-  padding: 16px;
+  padding: 14px;
   overflow-x: auto;
-  background: #f8fafc;
-  border-radius: 0 0 8px 8px;
-  line-height: 1.7;
+  background: var(--color-surface-soft);
+  border-radius: 0 0 6px 6px;
+  line-height: 1.6;
 }

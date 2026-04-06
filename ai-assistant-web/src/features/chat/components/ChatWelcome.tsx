@@ -13,8 +13,13 @@ export function ChatWelcome({ onPromptSelect }: { onPromptSelect: (prompt: strin
         <Welcome
           variant="borderless"
           className={styles.welcome}
-          icon={<BulbOutlined />}
-          title="把想法交给 Ling Workspace"
+          icon={
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
+              <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" fill="currentColor" opacity="0.2"/>
+              <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round"/>
+            </svg>
+          }
+          title="把想法交给 AI 助手"
           description="支持多会话、本地持久化和流式 mock，适合作为后续接真实后端前的前端工作台。"
         />
 

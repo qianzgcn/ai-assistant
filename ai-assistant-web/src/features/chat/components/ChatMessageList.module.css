@@ -6,7 +6,7 @@
   padding: 8px 0 22px;
 }
 
-.messageList :global(.ant-x-bubble-list) {
+.messageList :global(.ant-bubble-list) {
   width: 100%;
 }
 
@@ -15,7 +15,7 @@
   width: 36px;
   height: 36px;
   place-items: center;
-  border-radius: 12px;
+  border-radius: 10px;
   color: #ffffff;
   background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-strong) 100%);
   font-size: 12px;
@@ -25,13 +25,86 @@
 .userBubble {
   color: #ffffff !important;
   background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-strong) 100%) !important;
+  border: none !important;
 }
 
 .userMessage {
   white-space: pre-wrap;
-  line-height: 1.75;
+  line-height: 1.7;
 }
 
 .messagePlaceholder {
   color: var(--color-text-subtle);
+}
+
+.markdown {
+  color: var(--color-text);
+  line-height: 1.75;
+}
+
+.markdown p,
+.markdown ul,
+.markdown ol,
+.markdown blockquote,
+.markdown table,
+.markdown pre {
+  margin: 0 0 12px;
+}
+
+.markdown h1,
+.markdown h2,
+.markdown h3 {
+  margin: 0 0 10px;
+  color: var(--color-text);
+}
+
+.markdown table {
+  width: 100%;
+  border-collapse: collapse;
+  overflow: hidden;
+  border-radius: 8px;
+}
+
+.markdown th,
+.markdown td {
+  padding: 10px 12px;
+  border: 1px solid var(--color-border);
+}
+
+.markdown blockquote {
+  padding-left: 12px;
+  border-left: 3px solid var(--color-primary);
+  color: var(--color-text-muted);
+}
+
+.inlineCode {
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: #f1f5f9;
+  color: var(--color-primary-strong);
+}
+
+.codeBlock {
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+}
+
+.codeHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 12px;
+  color: var(--color-text-muted);
+  background: #f8fafc;
+  font-size: 12px;
+}
+
+.codeContent {
+  margin: 0;
+  padding: 16px;
+  overflow-x: auto;
+  background: #f8fafc;
+  border-radius: 0 0 8px 8px;
+  line-height: 1.7;
 }

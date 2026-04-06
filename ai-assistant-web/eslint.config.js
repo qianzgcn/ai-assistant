@@ -9,7 +9,7 @@ export default tseslint.config(
     ignores: ['coverage', 'dist', 'node_modules', '**/*.d.ts'],
   },
   {
-    files: ['**/*.test.ts', '**/*.test.tsx'],
+    files: ['src/**/*.test.ts', 'src/**/*.test.tsx'],
     rules: {
       '@typescript-eslint/require-await': 'off',
       'require-yield': 'off',
@@ -17,12 +17,12 @@ export default tseslint.config(
   },
   {
     extends: [js.configs.recommended, ...tseslint.configs.recommendedTypeChecked],
-    files: ['**/*.{ts,tsx}'],
+    files: ['src/**/*.{ts,tsx}'],
     languageOptions: {
       ecmaVersion: 2023,
       globals: globals.browser,
       parserOptions: {
-        project: ['./tsconfig.app.json', './tsconfig.node.json'],
+        project: ['./tsconfig.json'],
         tsconfigRootDir: import.meta.dirname,
       },
     },

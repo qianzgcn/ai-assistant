@@ -1,0 +1,47 @@
+.header {
+  padding: 28px 32px 18px;
+  border-bottom: 1px solid rgba(219, 227, 240, 0.8);
+}
+
+.headerInner {
+  width: 100%;
+  max-width: var(--chat-content-width);
+  margin: 0 auto;
+}
+
+.headerMain {
+  min-width: 0;
+}
+
+.headerEyebrow {
+  color: var(--color-text-muted);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.title {
+  margin: 6px 0 0 !important;
+  color: #0f172a !important;
+}
+
+.titleInput {
+  max-width: 420px;
+  margin-top: 6px;
+}
+
+.headerDescription {
+  max-width: 640px;
+  margin: 8px 0 0 !important;
+  color: var(--color-text-muted) !important;
+}
+
+.modelSelect {
+  min-width: 220px;
+}
+
+@media (max-width: 1200px) {
+  .header {
+    padding-inline: 24px;
+  }
+}

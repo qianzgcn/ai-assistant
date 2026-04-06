@@ -1,0 +1,96 @@
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 24px 18px 18px;
+  gap: 18px;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.newButton {
+  justify-content: flex-start;
+  height: 44px;
+  border-radius: var(--radius-md);
+}
+
+.metaRow {
+  padding: 0 4px;
+}
+
+.metaText {
+  color: var(--color-text-muted);
+  font-size: 12px;
+}
+
+.listWrap {
+  min-height: 0;
+  flex: 1;
+  overflow: auto;
+  padding-right: 4px;
+}
+
+.listRoot {
+  background: transparent;
+}
+
+.groupBlock {
+  margin-bottom: 18px;
+}
+
+.groupLabel {
+  color: var(--color-text-muted);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+}
+
+.listItem {
+  margin-bottom: 6px;
+  border-radius: var(--radius-lg);
+}
+
+.itemIcon {
+  color: #5b7cff;
+}
+
+.itemLabel {
+  width: 100%;
+  min-width: 0;
+}
+
+.itemTopRow,
+.itemBottomRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.itemBottomRow {
+  margin-top: 4px;
+}
+
+.itemTitle {
+  flex: 1;
+  min-width: 0;
+}
+
+.itemTime {
+  color: var(--color-text-subtle);
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+.itemPreview {
+  flex: 1;
+  min-width: 0;
+  font-size: 12px;
+}
+
+.statusTag {
+  margin-inline-end: 0;
+}

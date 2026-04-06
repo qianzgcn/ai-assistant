@@ -1,0 +1,64 @@
+- generic [ref=e5]:
+  - complementary [ref=e6]:
+    - generic [ref=e8]:
+      - generic [ref=e9]:
+        - generic [ref=e10]:
+          - img "robot" [ref=e12]:
+            - img [ref=e13]
+          - generic [ref=e15]:
+            - generic [ref=e16]: Ling Workspace
+            - generic [ref=e17]: 本地优先的 AI 对话工作台
+        - button "plus 新建会话" [ref=e18] [cursor=pointer]:
+          - img "plus" [ref=e20]:
+            - img [ref=e21]
+          - generic [ref=e24]: 新建会话
+      - generic [ref=e25]:
+        - img "search" [ref=e27]:
+          - img [ref=e28]
+        - textbox "搜索会话" [ref=e30]
+      - generic [ref=e33]: 共 0 个会话
+      - list [ref=e35]
+  - main [ref=e36]:
+    - generic [ref=e37]:
+      - generic [ref=e40]:
+        - generic [ref=e41]:
+          - text: 当前工作区
+          - heading "新的对话" [level=3] [ref=e42]
+          - generic [ref=e43]: 从推荐问题开始，或者直接输入你的需求。
+        - generic [ref=e45] [cursor=pointer]:
+          - generic "Mock GPT-4.1" [ref=e46]:
+            - text: Mock GPT-4.1
+            - combobox [ref=e47]
+          - img "down" [ref=e49]:
+            - img [ref=e50]
+      - generic [ref=e52]:
+        - generic [ref=e55]:
+          - generic [ref=e56]:
+            - img "bulb" [ref=e58]:
+              - img [ref=e59]
+            - generic [ref=e61]:
+              - heading "把想法交给 Ling Workspace" [level=4] [ref=e62]
+              - generic [ref=e63]: 支持多会话、本地持久化和流式 mock，适合作为后续接真实后端前的前端工作台。
+          - generic [ref=e64]:
+            - heading "试试这些问题" [level=5] [ref=e65]
+            - generic [ref=e66]:
+              - generic [ref=e68]:
+                - heading "帮我制定一个 React 项目的目录规范" [level=6] [ref=e69]
+                - paragraph [ref=e70]: 点击后会直接发送到当前草稿会话。
+              - generic [ref=e72]:
+                - heading "把这段需求拆成开发任务清单" [level=6] [ref=e73]
+                - paragraph [ref=e74]: 点击后会直接发送到当前草稿会话。
+              - generic [ref=e76]:
+                - heading "解释一下 useDeferredValue 的适用场景" [level=6] [ref=e77]
+                - paragraph [ref=e78]: 点击后会直接发送到当前草稿会话。
+              - generic [ref=e80]:
+                - heading "写一个带代码示例的接口设计文档模板" [level=6] [ref=e81]
+                - paragraph [ref=e82]: 点击后会直接发送到当前草稿会话。
+        - generic [ref=e85]:
+          - generic [ref=e86]:
+            - textbox "输入问题，按 Enter 发送，Shift + Enter 换行" [ref=e87]
+            - button "arrow-up" [disabled] [ref=e90]:
+              - generic:
+                - img "arrow-up":
+                  - img
+          - generic [ref=e91]: "输入 `[mock-error]` 可以主动触发一次错误态，用于联调异常流程。"

@@ -1,0 +1,31 @@
+:root {
+  --font-family-base: "SF Pro Display", "PingFang SC", "Microsoft YaHei", "Segoe UI", sans-serif;
+  --font-family-mono: "JetBrains Mono", "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+
+  --color-primary: #2667ff;
+  --color-primary-strong: #1141be;
+  --color-success: #16a34a;
+  --color-warning: #f59e0b;
+  --color-error: #dc2626;
+  --color-text: #111827;
+  --color-text-muted: #64748b;
+  --color-text-subtle: #94a3b8;
+  --color-border: #dbe3f0;
+  --color-surface: rgba(255, 255, 255, 0.94);
+  --color-surface-soft: rgba(255, 255, 255, 0.86);
+  --color-page-top: rgba(38, 103, 255, 0.14);
+  --color-page-right: rgba(21, 94, 239, 0.08);
+
+  --shadow-soft: 0 10px 30px rgba(15, 23, 42, 0.08);
+  --shadow-shell: 0 24px 80px rgba(15, 23, 42, 0.08);
+  --shadow-brand: 0 18px 30px rgba(38, 103, 255, 0.28);
+
+  --radius-md: 14px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-shell: 28px;
+
+  --layout-shell-padding: 24px;
+  --layout-sidebar-width: 312px;
+  --chat-content-width: 980px;
+}

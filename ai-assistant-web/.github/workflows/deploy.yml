@@ -1,0 +1,115 @@
+name: Deploy To Tencent CVM
+
+on:
+  # 仅在 main 分支收到 push 时自动部署。
+  push:
+    branches:
+      - main
+
+# 这个工作流只需要读取仓库代码，不需要额外的写权限。
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    name: Build And Deploy
+    runs-on: ubuntu-latest
+
+    # 将常用变量集中在这里，避免在多个步骤里重复写死。
+    env:
+      NODE_VERSION: '20.19.5'
+      ARCHIVE_NAME: web-dist.tar.gz
+      RELEASE_NAME: ${{ github.sha }}
+      KEEP_RELEASES: ${{ secrets.KEEP_RELEASES }}
+
+    steps:
+      # 第一步：拉取仓库代码。后续所有构建命令都依赖这里下载下来的源码。
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 第二步：安装固定版本的 Node，确保本地和 CI 的行为尽可能一致。
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+
+      # 第三步：安装依赖。这里用 npm ci，而不是 npm install，
+      # 因为 ci 会严格按照 package-lock.json 安装，更适合 CI/CD。
+      - name: Install dependencies
+        run: npm ci
+
+      # 第四步：先做静态检查。这里失败说明代码质量或类型约束未通过，不会继续部署。
+      - name: Run lint
+        run: npm run lint
+
+      # 第五步：执行测试。这里失败说明现有功能可能被破坏，也不会继续部署。
+      - name: Run tests
+        run: npm test
+
+      # 第六步：构建生产产物。Vite 会在 dist 目录下生成可部署的静态文件。
+      - name: Build project
+        run: npm run build
+
+      # 第七步：把 dist 目录压缩成一个归档文件，方便后续通过 scp 一次性上传。
+      - name: Archive dist
+        run: tar -czf "${ARCHIVE_NAME}" -C dist .
+
+      # 第八步：准备 SSH 私钥和 known_hosts。
+      # 这里不依赖第三方 SSH Action，而是直接使用 runner 自带的 ssh/scp 命令。
+      - name: Prepare SSH client
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+
+          # 将 GitHub Secrets 里的私钥写入 runner。
+          printf '%s\n' "${{ secrets.TENCENT_SSH_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+
+          # 提前把服务器指纹写入 known_hosts，避免首次连接时交互确认。
+          ssh-keyscan -p "${{ secrets.TENCENT_PORT }}" "${{ secrets.TENCENT_HOST }}" >> ~/.ssh/known_hosts
+          chmod 644 ~/.ssh/known_hosts
+
+      # 第九步：先远程创建部署目录。
+      # 这么做是为了确保后续 scp 上传时目标目录一定存在。
+      - name: Prepare remote directories
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+
+          ssh -p "${{ secrets.TENCENT_PORT }}" "${{ secrets.TENCENT_USER }}@${{ secrets.TENCENT_HOST }}" \
+            "mkdir -p '${{ secrets.DEPLOY_PATH }}/tmp' '${{ secrets.DEPLOY_PATH }}/releases' '${{ secrets.DEPLOY_PATH }}/shared'"
+
+      # 第十步：上传构建产物和远程部署脚本。
+      # 产物和脚本都放到服务器的 tmp 目录里，便于后续统一处理。
+      - name: Upload artifact and deploy script
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+
+          scp -P "${{ secrets.TENCENT_PORT }}" "${ARCHIVE_NAME}" \
+            "${{ secrets.TENCENT_USER }}@${{ secrets.TENCENT_HOST }}:${{ secrets.DEPLOY_PATH }}/tmp/${ARCHIVE_NAME}"
+
+          scp -P "${{ secrets.TENCENT_PORT }}" "scripts/deploy/remote-release.sh" \
+            "${{ secrets.TENCENT_USER }}@${{ secrets.TENCENT_HOST }}:${{ secrets.DEPLOY_PATH }}/tmp/remote-release.sh"
+
+      # 第十一步：在服务器上执行远程部署脚本。
+      # 这里不会在服务器上构建前端，只是解压 dist、切换 current、reload Nginx。
+      - name: Execute remote release script
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+
+          ssh -p "${{ secrets.TENCENT_PORT }}" "${{ secrets.TENCENT_USER }}@${{ secrets.TENCENT_HOST }}" <<EOF
+          set -Eeuo pipefail
+          chmod +x '${{ secrets.DEPLOY_PATH }}/tmp/remote-release.sh'
+          DEPLOY_PATH='${{ secrets.DEPLOY_PATH }}' \
+          RELEASE_NAME='${RELEASE_NAME}' \
+          ARCHIVE_NAME='${ARCHIVE_NAME}' \
+          NGINX_CONTAINER_NAME='${{ secrets.NGINX_CONTAINER_NAME }}' \
+          KEEP_RELEASES='${KEEP_RELEASES}' \
+          bash '${{ secrets.DEPLOY_PATH }}/tmp/remote-release.sh'
+          EOF

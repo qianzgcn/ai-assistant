@@ -411,25 +411,23 @@ class ChatService:
                 # Save assistant message
                 assistant_message = ChatMessage(
                     id=assistant_message_id,
-                    conversation_id=conversation.id,
                     role=MessageRole.ASSISTANT,
                     content=full_content,
                     created_at=datetime.utcnow(),
                     status=MessageStatus.COMPLETED
                 )
-                await self.save_message(assistant_message)
+                await self.save_message(assistant_message, conversation_id=conversation.id)
             else:
                 # Save error message
                 assistant_message = ChatMessage(
                     id=assistant_message_id,
-                    conversation_id=conversation.id,
                     role=MessageRole.ASSISTANT,
                     content=full_content,
                     created_at=datetime.utcnow(),
                     status=MessageStatus.ERROR,
                     error="Failed to generate response"
                 )
-                await self.save_message(assistant_message)
+                await self.save_message(assistant_message, conversation_id=conversation.id)
             
             # 8. Update conversation status and timestamps
             await self.update_conversation(

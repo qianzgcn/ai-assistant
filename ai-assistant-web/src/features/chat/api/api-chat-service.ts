@@ -15,13 +15,13 @@ import type {
 import type { ChatService } from './chat-service';
 
 // Base URL for the API - can be configured via environment variable
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api';
 
 export class ApiChatService implements ChatService {
   private abortControllers: Map<string, AbortController> = new Map();
 
   async listConversations(): Promise<Conversation[]> {
-    const response = await fetch(`${API_BASE_URL}/api/conversations`);
+    const response = await fetch(`${API_BASE_URL}/conversations`);
     
     if (!response.ok) {
       throw new Error(`Failed to list conversations: ${response.statusText}`);
@@ -32,7 +32,7 @@ export class ApiChatService implements ChatService {
   }
 
   async createConversation(conversation: Conversation): Promise<Conversation> {
-    const response = await fetch(`${API_BASE_URL}/api/conversations`, {
+    const response = await fetch(`${API_BASE_URL}/conversations`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -49,7 +49,7 @@ export class ApiChatService implements ChatService {
   }
 
   async updateConversationMeta(conversation: Conversation): Promise<Conversation> {
-    const response = await fetch(`${API_BASE_URL}/api/conversations/${conversation.id}`, {
+    const response = await fetch(`${API_BASE_URL}/conversations/${conversation.id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -67,7 +67,7 @@ export class ApiChatService implements ChatService {
   }
 
   async deleteConversation(conversationId: string): Promise<void> {
-    const response = await fetch(`${API_BASE_URL}/api/conversations/${conversationId}`, {
+    const response = await fetch(`${API_BASE_URL}/conversations/${conversationId}`, {
       method: 'DELETE',
     });
     
@@ -113,7 +113,7 @@ export class ApiChatService implements ChatService {
       };
 
       // Make streaming request
-      const response = await fetch(`${API_BASE_URL}/api/chat/stream`, {
+      const response = await fetch(`${API_BASE_URL}/chat/stream`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body),
@@ -201,7 +201,7 @@ export class ApiChatService implements ChatService {
         model: request.model,
       };
 
-      const response = await fetch(`${API_BASE_URL}/api/chat/regenerate`, {
+      const response = await fetch(`${API_BASE_URL}/chat/regenerate`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body),
@@ -261,7 +261,7 @@ export class ApiChatService implements ChatService {
     }
 
     // Also notify server to stop
-    fetch(`${API_BASE_URL}/api/chat/stop/${conversationId}`, {
+    fetch(`${API_BASE_URL}/chat/stop/${conversationId}`, {
       method: 'POST',
     }).catch(() => {
       // Ignore errors when stopping

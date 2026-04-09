@@ -15,7 +15,120 @@ import type {
 import type { ChatService } from './chat-service';
 
 // Base URL for the API - can be configured via environment variable
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api';
+const rawApiBaseUrl = (import.meta.env as Record<string, unknown>).VITE_API_BASE_URL;
+const API_BASE_URL = typeof rawApiBaseUrl === 'string' ? rawApiBaseUrl : '/api';
+
+type ApiConversation = {
+  id: string;
+  title: string;
+  model: string;
+  created_at: string;
+  updated_at: string;
+  last_message_at: string;
+  status: Conversation['status'];
+};
+
+type ApiConversationListResponse = {
+  conversations: ApiConversation[];
+};
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null;
+}
+
+function readString(value: unknown, fieldName: string): string {
+  if (typeof value !== 'string') {
+    throw new Error(`Invalid ${fieldName} received from API`);
+  }
+
+  return value;
+}
+
+function readConversationStatus(value: unknown): Conversation['status'] {
+  if (value === 'idle' || value === 'generating' || value === 'error') {
+    return value;
+  }
+
+  throw new Error('Invalid conversation status received from API');
+}
+
+function parseConversation(value: unknown): ApiConversation {
+  if (!isRecord(value)) {
+    throw new Error('Invalid conversation received from API');
+  }
+
+  return {
+    id: readString(value.id, 'conversation id'),
+    title: readString(value.title, 'conversation title'),
+    model: readString(value.model, 'conversation model'),
+    created_at: readString(value.created_at, 'conversation created_at'),
+    updated_at: readString(value.updated_at, 'conversation updated_at'),
+    last_message_at: readString(value.last_message_at, 'conversation last_message_at'),
+    status: readConversationStatus(value.status),
+  };
+}
+
+function parseConversationListResponse(value: unknown): ApiConversationListResponse {
+  if (!isRecord(value) || !Array.isArray(value.conversations)) {
+    throw new Error('Invalid conversations response received from API');
+  }
+
+  return {
+    conversations: value.conversations.map(parseConversation),
+  };
+}
+
+function parseChatStreamEvent(value: unknown): ChatStreamEvent {
+  if (!isRecord(value)) {
+    throw new Error('Invalid stream event received from API');
+  }
+
+  const type = readString(value.type, 'stream event type');
+  const conversationId = readString(value.conversationId, 'stream event conversationId');
+
+  switch (type) {
+    case 'message_start':
+      return {
+        type,
+        conversationId,
+        messageId: readString(value.messageId, 'stream event messageId'),
+      };
+    case 'message_delta':
+      return {
+        type,
+        conversationId,
+        messageId: readString(value.messageId, 'stream event messageId'),
+        delta: readString(value.delta, 'stream event delta'),
+      };
+    case 'message_end':
+      if (value.done !== true) {
+        throw new Error('Invalid stream event done flag received from API');
+      }
+
+      return {
+        type,
+        conversationId,
+        messageId: readString(value.messageId, 'stream event messageId'),
+        content: readString(value.content, 'stream event content'),
+        done: true,
+      };
+    case 'title_generated':
+      return {
+        type,
+        conversationId,
+        title: readString(value.title, 'stream event title'),
+      };
+    case 'error':
+      return {
+        type,
+        conversationId,
+        messageId: readString(value.messageId, 'stream event messageId'),
+        error: readString(value.error, 'stream event error'),
+      };
+    default:
+      throw new Error(`Unsupported stream event type received from API: ${type}`);
+  }
+}
 
 export class ApiChatService implements ChatService {
   private abortControllers: Map<string, AbortController> = new Map();
@@ -26,9 +139,9 @@ export class ApiChatService implements ChatService {
     if (!response.ok) {
       throw new Error(`Failed to list conversations: ${response.statusText}`);
     }
-    
-    const data = await response.json();
-    return data.conversations.map(this.mapConversation);
+
+    const data = parseConversationListResponse((await response.json()) as unknown);
+    return data.conversations.map((conversation) => this.mapConversation(conversation));
   }
 
   async createConversation(conversation: Conversation): Promise<Conversation> {
@@ -44,8 +157,8 @@ export class ApiChatService implements ChatService {
     if (!response.ok) {
       throw new Error(`Failed to create conversation: ${response.statusText}`);
     }
-    
-    return this.mapConversation(await response.json());
+
+    return this.mapConversation(parseConversation((await response.json()) as unknown));
   }
 
   async updateConversationMeta(conversation: Conversation): Promise<Conversation> {
@@ -62,8 +175,8 @@ export class ApiChatService implements ChatService {
     if (!response.ok) {
       throw new Error(`Failed to update conversation: ${response.statusText}`);
     }
-    
-    return this.mapConversation(await response.json());
+
+    return this.mapConversation(parseConversation((await response.json()) as unknown));
   }
 
   async deleteConversation(conversationId: string): Promise<void> {
@@ -149,9 +262,9 @@ export class ApiChatService implements ChatService {
         for (const line of lines) {
           if (line.startsWith('data: ')) {
             try {
-              const data = JSON.parse(line.slice(6));
-              yield data as ChatStreamEvent;
-              
+              const data = parseChatStreamEvent(JSON.parse(line.slice(6)) as unknown);
+              yield data;
+
               // Check if stream ended
               if (data.type === 'message_end' || data.type === 'error') {
                 return;
@@ -236,9 +349,9 @@ export class ApiChatService implements ChatService {
         for (const line of lines) {
           if (line.startsWith('data: ')) {
             try {
-              const data = JSON.parse(line.slice(6));
-              yield data as ChatStreamEvent;
-              
+              const data = parseChatStreamEvent(JSON.parse(line.slice(6)) as unknown);
+              yield data;
+
               if (data.type === 'message_end' || data.type === 'error') {
                 return;
               }
@@ -271,7 +384,7 @@ export class ApiChatService implements ChatService {
   /**
    * Map API response to frontend Conversation type
    */
-  private mapConversation(data: any): Conversation {
+  private mapConversation(data: ApiConversation): Conversation {
     return {
       id: data.id,
       title: data.title,

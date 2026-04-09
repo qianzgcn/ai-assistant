@@ -1,4 +1,3 @@
-import { BulbOutlined } from '@ant-design/icons';
 import Prompts from '@ant-design/x/es/prompts';
 import Welcome from '@ant-design/x/es/welcome';
 
